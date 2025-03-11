@@ -149,6 +149,14 @@ class Login extends JFrame implements ActionListener{
         signup2.setForeground(Color.white);
         signup2.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        signup2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(panel, "Redirecting to Sign Up!");
+            }
+        });
+
+
         panel.add(signup);
         panel.add(signup2);
         panel.add(loginButton);
@@ -165,20 +173,24 @@ class Login extends JFrame implements ActionListener{
             passwordField.setEchoChar('*');
         }
     }
-    if(evt.getSource()==loginButton){
+    if (evt.getSource() == loginButton) { 
         String usertext = username.getText();
         String pwdtext = new String(passwordField.getPassword());
-        if(usertext.equalsIgnoreCase("xyve") && pwdtext.equalsIgnoreCase("vince")){
-            JOptionPane.showMessageDialog(this, "Log in successfuly!");
+        
+        if (usertext.isEmpty() || pwdtext.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fill up the form");
+        } else if (!usertext.equalsIgnoreCase("xyve")) {
+            JOptionPane.showMessageDialog(this, "Username incorrect");
+        } else if (!pwdtext.equalsIgnoreCase("vince")) {
+            JOptionPane.showMessageDialog(this, "Wrong password, Please try again!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Log in successfully!");
             this.dispose(); 
             new Mainapp(); 
-        }else{
-            JOptionPane.showMessageDialog(this, "Wrong password, Please try again!");
         }
     }
-
+    
     }
-
 }
 
 class Mainapp implements ActionListener {
