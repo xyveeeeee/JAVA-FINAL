@@ -7,7 +7,7 @@ public class splash extends JFrame{
     static Font font1 = new Font("Arial", Font.BOLD, 18);
 
     public static void main(String[] args) {
-        //splash wndow
+        // wndow
         JWindow splash = new JWindow();
 
         // windw background color
@@ -33,25 +33,24 @@ public class splash extends JFrame{
         // visible the pcontent
         splash.setContentPane(panel);
 
-        // window size
+        // size
         splash.setSize(400, 650);
         splash.setLocationRelativeTo(null);
 
-        // Make the splash screen visible
         splash.setVisible(true);
 
         try {
-            // splash screen timer
+            // screen time
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // Close splash screen
+        // Close splash 
         splash.setVisible(false);
         splash.dispose();
 
-        // Start the main app
+        // starting in logn
         SwingUtilities.invokeLater(() -> new Login());
     }
 }

@@ -107,32 +107,41 @@ public class Login extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        if(evt.getSource()==showPassword){
-            if(showPassword.isSelected()){
-                passwordField.setEchoChar((char)0);
-            }
-            else{
+        if (evt.getSource() == showPassword) {
+            if (showPassword.isSelected()) {
+                passwordField.setEchoChar((char) 0);
+            } else {
                 passwordField.setEchoChar('*');
             }
         }
-
+    
         if (evt.getSource() == loginButton) {
             String userText = username.getText();
             String pwdText = new String(passwordField.getPassword());
 
-            if (username.getText().isEmpty() || passwordField.getPassword().length == 0) {
+            if (userText.isEmpty() || pwdText.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please fill out all fields");
+                return;
             }
-            
-            else if(UserDatabase.validateLogin(userText, pwdText)) {
-                JOptionPane.showMessageDialog(this, "Login successful!");
-                dispose();
-                new Mainapp();
+    
+            // Validate login before trying to get userId
+            if (UserDatabase.validateLogin(userText, pwdText)) {
+                int userId = UserDatabase.getUserId(userText);
+                
+                if (userId != -1) {
+                    SessionManager.setSession(userId, userText); // Stor userId and username
+                    JOptionPane.showMessageDialog(this, "Login successful!");
+                    dispose();
+                    new Mainapp(userId);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Error retrieving user ID.");
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid username or password.");
             }
         }
     }
+    
 
     public static void main(String[] args) {
         new Login();

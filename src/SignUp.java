@@ -97,7 +97,7 @@ public class SignUp extends JFrame implements ActionListener {
         panel.add(showPassword);
 
         // Registr Button
-        registerButton = new JButton("Register");
+        registerButton = new JButton("Sign up");
         registerButton.setBounds(120, 480, 150, 40);
         registerButton.setFont(font2);
         registerButton.addActionListener(this);
@@ -111,7 +111,7 @@ public class SignUp extends JFrame implements ActionListener {
         panel.add(loginLabel);
 
         JLabel loginLink = new JLabel("Login Here!");
-        loginLink.setBounds(150, 550, 200, 50);
+        loginLink.setBounds(155, 550, 200, 50);
         loginLink.setFont(font4);
         loginLink.setForeground(Color.WHITE);
         loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
