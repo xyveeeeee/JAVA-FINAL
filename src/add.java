@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.swing.*;
 
 public class add extends JFrame {
@@ -47,8 +49,8 @@ public class add extends JFrame {
         logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                new Login(); // Opens the Login window
-                dispose(); // Closes the current window
+                new Login(); 
+                dispose(); 
             }
         });
         panel.add(logout);
@@ -137,7 +139,6 @@ public class add extends JFrame {
     }
     
     private void addExpense() {
-      // Get text from fields
     String amountText = amountField.getText().trim();
     String category = categoryField.getText().trim();
     String description = descriptionField.getText().trim();
@@ -146,23 +147,37 @@ public class add extends JFrame {
       // Validate inputs
     if (amountText.isEmpty() || category.isEmpty() || description.isEmpty() || date.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Please fill out all fields.");
-        return; // Stop execution if any field is empty
+        return; 
+    }
+    if (!isValidDate(date)) {
+        JOptionPane.showMessageDialog(this, "Invalid date format. Please use YYYY-MM-DD.");
+        return;
     }
 
     try {
         double amount = Double.parseDouble(amountText);
 
-        boolean success = UserDatabase.addExpense(userId, amount, category, description, date);
+        boolean success = UserDatabase.addExpense(userId, date, category, description,amount);
         if (success) {
             JOptionPane.showMessageDialog(this, "Expense added successfully!");
-            mainApp.loadExpenses(userId); // Refresh table in Mainapp
+            mainApp.loadExpenses(userId); 
             new Mainapp(userId);
-            dispose(); // Close window after adding expense
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error adding expense.");
         }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Invalid amount. Please enter a valid number.");
+        }
+    }
+    private boolean isValidDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
         }
     }
 }

@@ -68,7 +68,7 @@ public class UserDatabase {
         int userId = -1;
 
         try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, username);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -84,7 +84,7 @@ public class UserDatabase {
         return userId;
     }
 
-    // Adding a new user to the sql database
+    // Add a new user to the sql database
     public static boolean addUser(String username, String password) {
         String query = "INSERT INTO users (username, password) VALUES (?, ?)";
 
@@ -108,17 +108,17 @@ public class UserDatabase {
     }
 
     // Adding expense to the database
-    public static boolean addExpense(int userId, double amount, String category, String description, String date) {
-        String query = "INSERT INTO expenses (user_id, amount, category, description, date) VALUES (?, ?, ?, ?, ?)";
+    public static boolean addExpense(int userId, String date, String category, String description, double amount) {
+        String query = "INSERT INTO expenses (user_id, date, category, description, amount) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setInt(1, userId);
-            stmt.setDouble(2, amount);
+            stmt.setString(2, date);
             stmt.setString(3, category);
             stmt.setString(4, description);
-            stmt.setString(5, date);
+            stmt.setDouble(5, amount);
 
             int rowsInserted = stmt.executeUpdate();
             return rowsInserted > 0;
@@ -132,7 +132,8 @@ public class UserDatabase {
     // Getimg expenses from the database for a specific user
     public static List<String[]> getExpenses(int userId) {
         List<String[]> expenses = new ArrayList<>();
-        String query = "SELECT amount, category, description, date FROM expenses WHERE user_id = ?";
+        String query = "SELECT amount, category, description, date FROM expenses WHERE user_id = ? ORDER BY date DESC";
+
 
         try (Connection conn = getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -146,7 +147,7 @@ public class UserDatabase {
                     String description = rs.getString("description");
                     String date = rs.getString("date");
 
-                    expenses.add(new String[]{amount, category, description, date});
+                    expenses.add(new String[]{date, category, description, amount});
                 }
             }
 
@@ -155,23 +156,6 @@ public class UserDatabase {
         }
 
         return expenses;
-    }
-
-    // Delete an expense by ID
-    public static boolean deleteExpense(int expenseId) {
-        String query = "DELETE FROM expenses WHERE id = ?";
-
-        try (Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            stmt.setInt(1, expenseId);
-            int rowsDeleted = stmt.executeUpdate();
-            return rowsDeleted > 0;
-
-        } catch (SQLException e) {
-            System.err.println("Error deleting expense: " + e.getMessage());
-            return false;
-        }
     }
 
     // Update an expense by ID
