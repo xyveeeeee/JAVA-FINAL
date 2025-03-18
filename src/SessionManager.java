@@ -1,5 +1,5 @@
 public class SessionManager {
-    private static int userId = -1; // Default to -1 (no session)
+    private static int userId = -1;
     private static String username = null;
 
     public synchronized static void setSession(int id, String user) {
