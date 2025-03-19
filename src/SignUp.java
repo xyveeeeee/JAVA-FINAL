@@ -146,7 +146,7 @@ public class SignUp extends JFrame implements ActionListener {
             String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
 
             
-            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) { // logic if field is checking empty
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) { // if field is checking empty
                 JOptionPane.showMessageDialog(this, "Please fill out all fields");
             } else if (!password.equals(confirmPassword)) {             //if password equlas to pasword
                 JOptionPane.showMessageDialog(this, "Passwords do not match"); 
