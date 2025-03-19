@@ -11,12 +11,12 @@ public class UserDatabase {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "password";
 
-    // Establish a connection to the database
+    // Establis connection to the database
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    // Testing connection data
+    // Testing connection data for debugging
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null) {
@@ -30,7 +30,7 @@ public class UserDatabase {
     // Secutring hash password using SHA-256 
     public static String hashPassword(String password) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            MessageDigest md = MessageDigest.getInstance("SHA-256"); // SHA-256 IS ALGORITHM STORING/HANDLING DATAS
             byte[] hashedBytes = md.digest(password.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte b : hashedBytes) {
@@ -43,7 +43,7 @@ public class UserDatabase {
         }
     }
 
-    // validating user from login to data
+    // CHECK user from login to data
     public static boolean validateLogin(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
         try (Connection conn = getConnection();
@@ -98,7 +98,7 @@ public class UserDatabase {
             return rowsInserted > 0;
 
         } catch (SQLException e) {
-            if ("23000".equals(e.getSQLState())) { // Code for duplicate entry
+            if ("23000".equals(e.getSQLState())) { // for duplicate entry
                 System.err.println("Username already exists: " + username);
             } else {
                 System.err.println("Error adding user: " + e.getMessage());

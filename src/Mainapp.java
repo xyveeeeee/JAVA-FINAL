@@ -20,6 +20,9 @@ public class Mainapp {
     private Font font4 = new Font("Arial", Font.BOLD, 17);
     private Font font5 = new Font("Arial", Font.BOLD, 80);
 
+    private JLabel expenseValue;
+    private JLabel totalValue;
+
     Mainapp(int userId) {
         frame = new JFrame("Personal Expenses Tracker");
 
@@ -42,11 +45,17 @@ public class Mainapp {
         bglabel2.setLayout(null);
         panel.add(bglabel2);
 
+        JPanel bglabel3 = new JPanel();
+        bglabel3.setBackground(Color.decode("#37555E"));
+        bglabel3.setBounds(0, 100, 650, 60);
+        bglabel3.setLayout(null);
+        panel.add(bglabel3);
+
          //daily
         JLabel daily = new JLabel("Daily");
         daily.setBounds(25, 30, 50, 25);
         daily.setFont(font1);
-        daily.setForeground(Color.decode("#366273"));   //#97ABC8
+        daily.setForeground(Color.decode("#366273"));   //#97ABC8 light colot
         daily.setCursor(new Cursor(Cursor.HAND_CURSOR));
         daily.addMouseListener(new MouseAdapter() {
             @Override
@@ -170,21 +179,54 @@ public class Mainapp {
         table.setFont(font1);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 150, 400, 465);
+        scrollPane.setBounds(0, 163, 400, 450);
         scrollPane.setBorder(null);
         scrollPane.getViewport().setBackground(Color.decode("#294752"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         panel.add(scrollPane);
 
+        JLabel expenseLabel = new JLabel("Expenses");
+        JLabel totalLabel = new JLabel("Total");
+        expenseValue = new JLabel("0.00");
+        totalValue = new JLabel("0.00");
+
+        expenseLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 15));
+        expenseValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        totalValue.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        expenseLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        expenseValue.setFont(new Font("Arial", Font.PLAIN, 14));
+        totalValue.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        expenseLabel.setForeground(Color.WHITE);
+        totalLabel.setForeground(Color.WHITE);
+        expenseValue.setForeground(new Color(150, 200, 220));
+        totalValue.setForeground(new Color(150, 200, 220));
+
+        expenseLabel.setBounds(70, 20, 100, 20);
+        totalLabel.setBounds(270, 20, 100, 20);
+        expenseValue.setBounds(93, 40, 100, 20);
+        totalValue.setBounds(278, 40, 100, 20);
+
+        panel.add(expenseLabel);
+        bglabel3.add(expenseLabel);
+        panel.add(totalLabel);
+        bglabel3.add(totalLabel);
+        panel.add(expenseValue);
+        bglabel3.add(expenseValue);
+        panel.add(totalValue);
+        bglabel3.add(totalValue);
+
         // Empty data message
         emptyLabel = new JLabel("Currently no existing data", SwingConstants.CENTER);
         emptyLabel.setFont(new Font("Arial", Font.BOLD, 16));
         emptyLabel.setForeground(Color.decode("#467A8D"));
-        emptyLabel.setBounds(20, 0, 350, 340);
+        emptyLabel.setBounds(20, 80, 350, 340);
         scrollPane.add(emptyLabel);
         panel.add(emptyLabel);
-
 
 
         // Add button
@@ -218,11 +260,22 @@ public class Mainapp {
     public void loadExpenses(int userId) {
         model.setRowCount(0);  // Clear previous data
         List<String[]> expenses = UserDatabase.getExpenses(userId);
+
+        double totalAmount = 0.0;
         
         if (expenses.isEmpty()) {
             emptyLabel.setVisible(true);
         } else {
             emptyLabel.setVisible(false);
+
+            for (String[] expense : expenses) {
+                totalAmount += Double.parseDouble(expense[3]); 
+            }
+    
+            
+            expenseValue.setText(String.format("%.2f", totalAmount));
+            totalValue.setText(String.format("%.2f", totalAmount));
+        
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             List<String[]> validExpenses = new ArrayList<>();
@@ -231,20 +284,20 @@ public class Mainapp {
                 try {
                     // Check if the date is valid before parsing
                     if (expense[0].matches("\\d{4}-\\d{2}-\\d{2}")) {  
-                        LocalDate.parse(expense[0], formatter); // Try parsing
-                        validExpenses.add(expense);  // If successful, add to list
+                        LocalDate.parse(expense[0], formatter); // parsing
+                        validExpenses.add(expense);  // If succes, add to list
                     } else {
-                        System.err.println("Invalid date format found: " + expense[0]); // Debugging output
+                        System.err.println("Invalid date format found: " + expense[0]); // for Debugging 
                     }
                 } catch (DateTimeParseException ex) {
                     System.err.println("Error parsing date: " + expense[0] + " - " + ex.getMessage());
                 }
             }
     
-            // Sort only valid expenses
+            // Sort valid expenses
             validExpenses.sort(Comparator.comparing(e -> LocalDate.parse(e[0], formatter)));
     
-            // Add sorted data to the table
+            // Add sorted dat to the table
             for (String[] expense : validExpenses) {
                 model.addRow(expense);
             }

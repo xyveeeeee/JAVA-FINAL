@@ -15,7 +15,7 @@ public class splash extends JFrame{
         panel.setBackground(Color.decode("#294752"));
         panel.setLayout(null); 
 
-        // splash image from the classpath
+        //img
         ImageIcon splashIcon = new ImageIcon(Mainapp.class.getResource("/logo.png")); 
         Image scaledImg = splashIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
         JLabel splashLabel = new JLabel(new ImageIcon(scaledImg));
