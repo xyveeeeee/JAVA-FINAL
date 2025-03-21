@@ -11,23 +11,25 @@ public class add extends JFrame {
     private Mainapp mainApp;
     private JLabel logout;
 
-    private Font font1 = new Font("Arial", Font.BOLD, 16);
+
     private Font font2 = new Font("Arial", Font.BOLD, 20);
+    private Font font3 = new Font("Arial", Font.BOLD, 18);
+
     private Font font4 = new Font("Arial", Font.BOLD, 17);
     
     public add(int userId, Mainapp mainApp) {
         this.userId = userId;
         this.mainApp = mainApp;
         
-        setTitle("Add Expense");
-        setSize(400, 650);
+        setTitle("Personal Expenses Tracker");
+        setSize(450, 650);
         setLocationRelativeTo(null);
         setLayout(null);
         
         JPanel panel = new JPanel();
         panel.setBackground(Color.decode("#294752"));
         panel.setLayout(null);
-        panel.setBounds(0, 0, 400, 650);
+        panel.setBounds(0, 0, 450, 650);
         add(panel);
 
         // App Icon
@@ -42,9 +44,9 @@ public class add extends JFrame {
         panel.add(bglabel1);
 
         logout = new JLabel("Log Out");
-        logout.setBounds(295, 20, 150, 30);
+        logout.setBounds(345, 25, 150, 30);
         logout.setForeground(Color.white);
-        logout.setFont(font4);
+        logout.setFont(font3);
         logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logout.addMouseListener(new MouseAdapter() {
             @Override
@@ -63,8 +65,8 @@ public class add extends JFrame {
         bglabel1.add(splashLabel);
 
         JLabel lbl = new JLabel("Personal Expenses Tracker");
-        lbl.setBounds(65, 20, 300, 30);
-        lbl.setFont(font1);
+        lbl.setBounds(65, 25, 300, 30);
+        lbl.setFont(font3);
         lbl.setForeground(Color.WHITE);
         panel.add(lbl);
         bglabel1.add(lbl);
@@ -78,7 +80,7 @@ public class add extends JFrame {
         panel.add(amountLabel);
         
         amountField = new JTextField();
-        amountField.setBounds(45, 150, 300, 40);
+        amountField.setBounds(45, 150, 340, 40);
         amountField.setFont(font4);
         panel.add(amountField);
         
@@ -89,7 +91,7 @@ public class add extends JFrame {
         panel.add(categoryLabel);
         
         categoryField = new JTextField();
-        categoryField.setBounds(45, 240, 300, 40);
+        categoryField.setBounds(45, 240, 340, 40);
         categoryField.setFont(font4);
         panel.add(categoryField);
         
@@ -100,7 +102,7 @@ public class add extends JFrame {
         panel.add(descriptionLabel);
         
         descriptionField = new JTextField();
-        descriptionField.setBounds(45, 330, 300, 40);
+        descriptionField.setBounds(45, 330, 340, 40);
         descriptionField.setFont(font4);
         panel.add(descriptionField);
         
@@ -111,7 +113,7 @@ public class add extends JFrame {
         panel.add(dateLabel);
         
         dateField = new JTextField();
-        dateField.setBounds(45, 420, 300, 40);
+        dateField.setBounds(45, 420, 340, 40);
         dateField.setFont(font4);
         panel.add(dateField);
         
@@ -123,7 +125,7 @@ public class add extends JFrame {
         
         // Clos button
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.setBounds(215, 500, 130, 40);
+        cancelButton.setBounds(255, 500, 130, 40);
         cancelButton.setFont(font4);
         panel.add(cancelButton);
         
@@ -160,7 +162,7 @@ public class add extends JFrame {
         boolean success = UserDatabase.addExpense(userId, date, category, description,amount);
         if (success) {
             JOptionPane.showMessageDialog(this, "Expense added successfully!");
-            mainApp.loadExpenses(userId); 
+            mainApp.loadExpenses(userId, "all"); 
             new Mainapp(userId);
             dispose();
         } else {

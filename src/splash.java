@@ -7,7 +7,7 @@ public class splash extends JFrame{
     static Font font1 = new Font("Arial", Font.BOLD, 18);
 
     public static void main(String[] args) {
-        // wndow
+        
         JWindow splash = new JWindow();
 
         // windw background color

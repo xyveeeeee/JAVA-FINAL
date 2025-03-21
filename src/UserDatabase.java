@@ -16,7 +16,7 @@ public class UserDatabase {
         return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
-    // Testing connection data for debugging
+    // v----  Testing data connection if it connected or not ----v
     public static void testConnection() {
         try (Connection conn = getConnection()) {
             if (conn != null) {
@@ -26,6 +26,7 @@ public class UserDatabase {
             System.err.println("Database connection failed: " + e.getMessage());
         }
     }
+    // ^--------------------------------------------------------^
 
     // Secutring hash password using SHA-256 
     public static String hashPassword(String password) {

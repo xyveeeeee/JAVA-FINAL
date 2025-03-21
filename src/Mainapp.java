@@ -16,11 +16,17 @@ public class Mainapp {
     private JLabel emptyLabel;
     private DefaultTableModel model;
     private JLabel logout;
+
     private Font font1 = new Font("Arial", Font.BOLD, 16);
-    private Font font4 = new Font("Arial", Font.BOLD, 17);
+    private Font font2 = new Font("Arial", Font.BOLD, 18);
+
     private Font font5 = new Font("Arial", Font.BOLD, 80);
 
-    private JLabel expenseValue;
+    private Color defaultnav = Color.decode("#366273");
+    private Color highlighttnav = Color.decode("#97ABC8");
+    private JLabel all, daily, weekly, monthly, categories;
+
+
     private JLabel totalValue;
 
     Mainapp(int userId) {
@@ -35,41 +41,59 @@ public class Mainapp {
 
         JPanel bglabel1 = new JPanel();
         bglabel1.setBackground(Color.decode("#0B1316"));
-        bglabel1.setBounds(0, 0, 650, 73);
+        bglabel1.setBounds(0, 0, 450, 73);
         bglabel1.setLayout(null);
         panel.add(bglabel1);
 
         JPanel bglabel2 = new JPanel();
         bglabel2.setBackground(Color.decode("#1C3138"));
-        bglabel2.setBounds(0, 50, 650, 60);
+        bglabel2.setBounds(0, 50, 450, 60);
         bglabel2.setLayout(null);
         panel.add(bglabel2);
 
         JPanel bglabel3 = new JPanel();
         bglabel3.setBackground(Color.decode("#37555E"));
-        bglabel3.setBounds(0, 100, 650, 60);
+        bglabel3.setBounds(0, 100, 450, 60);
         bglabel3.setLayout(null);
         panel.add(bglabel3);
 
+        //all
+        all = new JLabel("All");
+        all.setBounds(25, 30, 50, 25);
+        all.setFont(font1);
+        all.setForeground(Color.decode("#366273"));   //#97ABC8 light colot
+
+        all.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        all.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                loadExpenses(userId, "all");
+                changingcolor(all);
+            }
+        });
+        panel.add(all);
+        bglabel2.add(all);
+
          //daily
-        JLabel daily = new JLabel("Daily");
-        daily.setBounds(25, 30, 50, 25);
+        daily = new JLabel("Daily");
+        daily.setBounds(85, 30, 50, 25);
         daily.setFont(font1);
-        daily.setForeground(Color.decode("#366273"));   //#97ABC8 light colot
+        daily.setForeground(Color.decode("#366273"));   
+
         daily.setCursor(new Cursor(Cursor.HAND_CURSOR));
         daily.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-        
-        
+                loadExpenses(userId, "daily");
+                changingcolor(daily);
             }
         });
         panel.add(daily);
         bglabel2.add(daily);
 
         //weekly
-        JLabel weekly = new JLabel("Weekly");
-        weekly.setBounds(99, 30, 60, 25);
+        weekly = new JLabel("Weekly");
+        weekly.setBounds(159, 30, 60, 25);
         weekly.setFont(font1);
         weekly.setForeground(Color.decode("#366273"));
     
@@ -77,15 +101,17 @@ public class Mainapp {
         weekly.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-        
+                loadExpenses(userId, "weekly");
+                changingcolor(weekly);
+
             }
         });
         panel.add(weekly);
         bglabel2.add(weekly);
 
          //monthly
-        JLabel monthly = new JLabel("Monthly");
-        monthly.setBounds(188, 30, 70, 25);
+        monthly = new JLabel("Monthly");
+        monthly.setBounds(248, 30, 70, 25);
         monthly.setFont(font1);
         monthly.setForeground(Color.decode("#366273"));
     
@@ -93,14 +119,16 @@ public class Mainapp {
         monthly.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-        
+                loadExpenses(userId, "monthly");
+                changingcolor(monthly);
+
             }
         });
         panel.add(monthly);
         bglabel2.add(monthly);
 
-        JLabel categories = new JLabel("Categories");
-        categories.setBounds(278, 30, 90, 25);
+        categories = new JLabel("Categories");
+        categories.setBounds(338, 30, 90, 25);
         categories.setFont(font1);
         categories.setForeground(Color.decode("#366273"));
     
@@ -108,7 +136,10 @@ public class Mainapp {
         categories.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-            
+                loadExpenses(userId, "category");
+                changingcolor(categories);
+
+                
             }
         });
         panel.add(categories);
@@ -116,9 +147,9 @@ public class Mainapp {
 
         // Logout
         logout = new JLabel("Log Out");
-        logout.setBounds(295, 20, 150, 30);
+        logout.setBounds(345, 25, 150, 30);
         logout.setForeground(Color.white);
-        logout.setFont(font4);
+        logout.setFont(font2);
         logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logout.addMouseListener(new MouseAdapter() {
             @Override
@@ -135,16 +166,15 @@ public class Mainapp {
         bglabel1.add(splashLabel);
 
         JLabel lbl = new JLabel("Personal Expenses Tracker");
-        lbl.setBounds(65, 20, 300, 30);
-        lbl.setFont(font1);
+        lbl.setBounds(65, 25, 300, 30);
+        lbl.setFont(font2);
         lbl.setForeground(Color.WHITE);
         bglabel1.add(lbl);
 
-        // Table setup with delete button
-        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount"}, 0) {
+        model = new DefaultTableModel(new Object[]{"all","Date", "Category", "Description", "Amount"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4; //
+                return column == 4; 
             }
         };
 
@@ -153,7 +183,7 @@ public class Mainapp {
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 10));
 
-        // Hide headers
+        // Hidin headers
         JTableHeader header = table.getTableHeader();
         header.setPreferredSize(new Dimension(0, 0));
 
@@ -161,77 +191,64 @@ public class Mainapp {
         DefaultTableCellRenderer centerAlign = new DefaultTableCellRenderer();
         centerAlign.setHorizontalAlignment(JLabel.CENTER);
         centerAlign.setFont(font1);
-
-        DefaultTableCellRenderer rightAlign = new DefaultTableCellRenderer();
-        rightAlign.setHorizontalAlignment(JLabel.CENTER);
-        rightAlign.setForeground(new Color(100, 200, 255));
-        rightAlign.setFont(font1);
-
-        // Apply render
-        for (int i = 0; i < 4; i++) {
+        
+        // Apply it in table to make it centr
+        for (int i = 0; i < 5; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerAlign);
         }
 
-        // table styles
+        // table css
         table.setBackground(Color.decode("#11232D"));
         table.setForeground(Color.WHITE);
         table.setSelectionBackground(Color.decode("#467A8D"));
         table.setFont(font1);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 163, 400, 450);
+        scrollPane.setBounds(0, 163, 450, 450);
         scrollPane.setBorder(null);
         scrollPane.getViewport().setBackground(Color.decode("#294752"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         panel.add(scrollPane);
 
-        JLabel expenseLabel = new JLabel("Expenses");
-        JLabel totalLabel = new JLabel("Total");
-        expenseValue = new JLabel("0.00");
+
+        JLabel totalLabel = new JLabel("Total Expenses");
         totalValue = new JLabel("0.00");
 
-        expenseLabel.setFont(new Font("Arial", Font.BOLD, 15));
+
         totalLabel.setFont(new Font("Arial", Font.BOLD, 15));
-        expenseValue.setFont(new Font("Arial", Font.PLAIN, 14));
         totalValue.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        expenseLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
         totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        expenseValue.setFont(new Font("Arial", Font.PLAIN, 14));
         totalValue.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        expenseLabel.setForeground(Color.WHITE);
+
         totalLabel.setForeground(Color.WHITE);
-        expenseValue.setForeground(new Color(150, 200, 220));
         totalValue.setForeground(new Color(150, 200, 220));
 
-        expenseLabel.setBounds(70, 20, 100, 20);
-        totalLabel.setBounds(270, 20, 100, 20);
-        expenseValue.setBounds(93, 40, 100, 20);
-        totalValue.setBounds(278, 40, 100, 20);
 
-        panel.add(expenseLabel);
-        bglabel3.add(expenseLabel);
+        totalLabel.setBounds(160, 20, 200, 20);
+        totalValue.setBounds(210, 40, 200, 20);
+
+
         panel.add(totalLabel);
         bglabel3.add(totalLabel);
-        panel.add(expenseValue);
-        bglabel3.add(expenseValue);
         panel.add(totalValue);
         bglabel3.add(totalValue);
 
-        // Empty data message
+        // if data no data 
         emptyLabel = new JLabel("Currently no existing data", SwingConstants.CENTER);
         emptyLabel.setFont(new Font("Arial", Font.BOLD, 16));
         emptyLabel.setForeground(Color.decode("#467A8D"));
-        emptyLabel.setBounds(20, 80, 350, 340);
+        emptyLabel.setBounds(45, 80, 350, 340);
         scrollPane.add(emptyLabel);
         panel.add(emptyLabel);
 
 
         // Add button
         JLabel add = new JLabel("+");
-        add.setBounds(320, 500, 70, 100);
+        add.setBounds(370, 500, 70, 100);
         add.setFont(font5);
         add.setForeground(Color.decode("#467A8D"));
         panel.add(add);
@@ -246,64 +263,97 @@ public class Mainapp {
         });
         panel.add(scrollPane);
 
-        // Load expenses into table
-        loadExpenses(userId);
+        loadExpenses(userId, "all");
+    
+        changingcolor(all);
 
-        frame.setSize(400, 650);
+
+        frame.setSize(450, 650);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);  
         frame.setContentPane(panel);
         frame.setVisible(true);
     }
 
-    public void loadExpenses(int userId) {
-        model.setRowCount(0);  // Clear previous data
+    // v===========color changing habndle===============v
+    public void changingcolor(JLabel selectedLabel) {
+        all.setForeground(defaultnav);
+        daily.setForeground(defaultnav);
+        weekly.setForeground(defaultnav);
+        monthly.setForeground(defaultnav);
+        categories.setForeground(defaultnav);
+
+        selectedLabel.setForeground(highlighttnav); // Highlight clicked label
+    }
+    // ^ ==============================================^
+    // v==============handl dats function====================v
+    public void loadExpenses(int userId, String filterType) {
+        model.setRowCount(0);  // clr dats
         List<String[]> expenses = UserDatabase.getExpenses(userId);
-
-        double totalAmount = 0.0;
-        
-        if (expenses.isEmpty()) {
-            emptyLabel.setVisible(true);
-        } else {
-            emptyLabel.setVisible(false);
-
-            for (String[] expense : expenses) {
-                totalAmount += Double.parseDouble(expense[3]); 
-            }
     
-            
-            expenseValue.setText(String.format("%.2f", totalAmount));
-            totalValue.setText(String.format("%.2f", totalAmount));
-        
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            List<String[]> validExpenses = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate today = LocalDate.now();
     
-            for (String[] expense : expenses) {
-                try {
-                    // Check if the date is valid before parsing
-                    if (expense[0].matches("\\d{4}-\\d{2}-\\d{2}")) {  
-                        LocalDate.parse(expense[0], formatter); // parsing
-                        validExpenses.add(expense);  // If succes, add to list
-                    } else {
-                        System.err.println("Invalid date format found: " + expense[0]); // for Debugging 
-                    }
-                } catch (DateTimeParseException ex) {
-                    System.err.println("Error parsing date: " + expense[0] + " - " + ex.getMessage());
+        List<String[]> filteredExpenses = new ArrayList<>();
+    
+        for (String[] expense : expenses) {
+            try {
+                LocalDate expenseDate = LocalDate.parse(expense[0], formatter);
+    
+                switch (filterType) {
+                    case "daily":
+                        if (expenseDate.isEqual(today)) {
+                            filteredExpenses.add(expense);
+                        }
+                        break;
+                    case "weekly":
+                        LocalDate startOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
+                        LocalDate endOfWeek = startOfWeek.plusDays(6);
+                        if (!expenseDate.isBefore(startOfWeek) && !expenseDate.isAfter(endOfWeek)) {
+                            filteredExpenses.add(expense);
+                        }
+                        break;
+                    case "monthly":
+                        if (expenseDate.getMonth() == today.getMonth() && expenseDate.getYear() == today.getYear()) {
+                            filteredExpenses.add(expense);
+                        }
+                        break;
+                    case "category":
+                        filteredExpenses.add(expense); 
+                        break;
+                    case  "all":
+                        filteredExpenses.add(expense); 
                 }
-            }
-    
-            // Sort valid expenses
-            validExpenses.sort(Comparator.comparing(e -> LocalDate.parse(e[0], formatter)));
-    
-            // Add sorted dat to the table
-            for (String[] expense : validExpenses) {
-                model.addRow(expense);
+            } catch (DateTimeParseException e) {
+                System.err.println("Invalid date: " + expense[0] + " - " + e.getMessage());
             }
         }
-    }
     
+        // If the user clicks "Categories" sorted tje expenses by category
+        if (filterType.equals("category")) {
+            filteredExpenses.sort(Comparator.comparing(e -> e[1])); 
+        } else {
+            //sorteds by date
+            filteredExpenses.sort(Comparator.comparing(e -> LocalDate.parse(e[0], formatter)));
+        }
+    
+        // Adding expenss to thetable
+        for (String[] expense : filteredExpenses) {
+            model.addRow(expense);
+        }
+    
+        // total values
+        double totalAmount = filteredExpenses.stream()
+            .mapToDouble(expense -> Double.parseDouble(expense[3])) 
+            .sum();
+    
+        totalValue.setText(String.format("%.2f", totalAmount));
+    
+        
+        emptyLabel.setVisible(filteredExpenses.isEmpty());
+    }
 
     public static void main(String[] args) {
         int userId = UserDatabase.getUserId("testuser");
