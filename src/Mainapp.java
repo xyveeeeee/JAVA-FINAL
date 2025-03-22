@@ -246,22 +246,34 @@ public class Mainapp {
         panel.add(emptyLabel);
 
 
-        // Add button
-        JLabel add = new JLabel("+");
-        add.setBounds(370, 500, 70, 100);
-        add.setFont(font5);
-        add.setForeground(Color.decode("#467A8D"));
-        panel.add(add);
+    // Add button
+    JLayeredPane layeredPane = new JLayeredPane();
+    layeredPane.setBounds(0, 163, 450, 450); 
+    panel.add(layeredPane); 
 
-        add.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        add.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new add(userId, Mainapp.this);
-                frame.dispose();
-            }
-        });
-        panel.add(scrollPane);
+    // Add scrollPane inside layeredPane
+    scrollPane.setBounds(0, 0, 450, 450);
+    layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER); // added to scrollpane then make it bg .defaultlayer 
+
+    
+    JLabel add = new JLabel("+");
+    add.setBounds(370, 360, 70, 70); 
+    add.setFont(font5);
+    add.setForeground(Color.decode("#467A8D"));
+    add.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+    add.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            new add(userId, Mainapp.this);
+            frame.dispose();
+        }
+    });
+
+    
+    layeredPane.add(add, JLayeredPane.PALETTE_LAYER); //.pelett_layer to make it front or overly
+
+
 
         loadExpenses(userId, "all");
     
@@ -330,15 +342,20 @@ public class Mainapp {
                 System.err.println("Invalid date: " + expense[0] + " - " + e.getMessage());
             }
         }
-    
-        // If the user clicks "Categories" sorted tje expenses by category
+        
+        // If the user clicks "Categories" mag sosort into categories 
         if (filterType.equals("category")) {
-            filteredExpenses.sort(Comparator.comparing(e -> e[1])); 
+            // Sort by date bago sa luma
+            filteredExpenses.sort(Comparator
+                .comparing((String[] e) -> LocalDate.parse(e[0], formatter), Comparator.reverseOrder()) // sort sa bago
+                .thenComparing(e -> e[1].toLowerCase())); // tas sort by category ng naka alphabetical order
         } else {
-            //sorteds by date
-            filteredExpenses.sort(Comparator.comparing(e -> LocalDate.parse(e[0], formatter)));
-        }
-    
+            // naka sort sa bago
+            filteredExpenses.sort(Comparator
+                .comparing((String[] e) -> LocalDate.parse(e[0], formatter))
+                .reversed());
+        }             
+        
         // Adding expenss to thetable
         for (String[] expense : filteredExpenses) {
             model.addRow(expense);
