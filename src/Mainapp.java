@@ -171,7 +171,7 @@ public class Mainapp {
         lbl.setForeground(Color.WHITE);
         bglabel1.add(lbl);
 
-        model = new DefaultTableModel(new Object[]{"all","Date", "Category", "Description", "Amount"}, 0) {
+        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4; 
@@ -179,6 +179,8 @@ public class Mainapp {
         };
 
         table = new JTable(model);
+        expenseTable.getColumn("Delete").setCellEditor(new ButtonEditor(expenseTable));
+
         table.setRowHeight(50);
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 10));
@@ -193,7 +195,7 @@ public class Mainapp {
         centerAlign.setFont(font1);
         
         // Apply it in table to make it centr
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerAlign);
         }
 
