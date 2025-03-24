@@ -54,7 +54,7 @@ public class UserDatabase {
             pstmt.setString(2, hashPassword(password));
 
             try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next(); // Returns true if user exists
+                return rs.next(); // it will return tru when user is exsiting 
             }
 
         } catch (SQLException e) {
@@ -62,6 +62,27 @@ public class UserDatabase {
             return false;
         }
     }
+    //delete expensess
+    public static void deleteExpense(String date, String category, String description, double amount) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "DELETE FROM expenses WHERE date = ? AND category = ? AND description = ? AND amount = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, date);
+            stmt.setString(2, category);
+            stmt.setString(3, description);
+            stmt.setDouble(4, amount);
+    
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Expense deleted successfully!");
+            } else {
+                System.out.println("Expense not found.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 
     // Getting user ID based on username
     public static int getUserId(String username) {

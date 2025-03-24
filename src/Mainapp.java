@@ -12,13 +12,14 @@ import javax.swing.table.*;
 
 public class Mainapp {
     private JFrame frame;
-    private JTable table;
     private JLabel emptyLabel;
     private DefaultTableModel model;
     private JLabel logout;
 
     private Font font1 = new Font("Arial", Font.BOLD, 16);
     private Font font2 = new Font("Arial", Font.BOLD, 18);
+    private Font font3 = new Font("Arial", Font.BOLD, 90);
+
 
     private Font font5 = new Font("Arial", Font.BOLD, 80);
 
@@ -171,15 +172,17 @@ public class Mainapp {
         lbl.setForeground(Color.WHITE);
         bglabel1.add(lbl);
 
-        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount"}, 0) {
+        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount", "delete"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4; 
             }
         };
 
-        table = new JTable(model);
-        expenseTable.getColumn("Delete").setCellEditor(new ButtonEditor(expenseTable));
+        JTable table = new JTable(model);
+        table.getColumnModel().getColumn(4).setCellRenderer(new DeleteButtonRenderer());
+        table.getColumnModel().getColumn(4).setCellEditor(new DeleteButtonEditor(table, model));
+
 
         table.setRowHeight(50);
         table.setShowGrid(false);
@@ -195,7 +198,7 @@ public class Mainapp {
         centerAlign.setFont(font1);
         
         // Apply it in table to make it centr
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerAlign);
         }
 
@@ -206,7 +209,7 @@ public class Mainapp {
         table.setFont(font1);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 163, 450, 450);
+        scrollPane.setBounds(0, 0, 450, 450);
         scrollPane.setBorder(null);
         scrollPane.getViewport().setBackground(Color.decode("#294752"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -254,9 +257,22 @@ public class Mainapp {
     panel.add(layeredPane); 
 
     // Add scrollPane inside layeredPane
-    scrollPane.setBounds(0, 0, 450, 450);
     layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER); // added to scrollpane then make it bg .defaultlayer 
 
+    JLabel delete = new JLabel("-");
+    delete.setBounds(50, 352, 200, 70); 
+    delete.setFont(font3);
+    delete.setForeground(Color.decode("#DE373A"));
+    delete.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+    delete.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            new add(userId, Mainapp.this);
+            frame.dispose();
+        }
+    });
+    layeredPane.add(delete, JLayeredPane.PALETTE_LAYER);
     
     JLabel add = new JLabel("+");
     add.setBounds(370, 360, 70, 70); 
@@ -281,7 +297,6 @@ public class Mainapp {
     
         changingcolor(all);
 
-
         frame.setSize(450, 650);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -290,7 +305,6 @@ public class Mainapp {
         frame.setContentPane(panel);
         frame.setVisible(true);
     }
-
     // v===========color changing habndle===============v
     public void changingcolor(JLabel selectedLabel) {
         all.setForeground(defaultnav);
@@ -373,6 +387,7 @@ public class Mainapp {
         
         emptyLabel.setVisible(filteredExpenses.isEmpty());
     }
+
 
     public static void main(String[] args) {
         int userId = UserDatabase.getUserId("testuser");
