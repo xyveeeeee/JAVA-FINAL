@@ -18,14 +18,11 @@ public class Mainapp {
 
     private Font font1 = new Font("Arial", Font.BOLD, 16);
     private Font font2 = new Font("Arial", Font.BOLD, 18);
-    private Font font3 = new Font("Arial", Font.BOLD, 90);
-
-
-    private Font font5 = new Font("Arial", Font.BOLD, 80);
+    private Font font3 = new Font("Arial", Font.BOLD, 19);
 
     private Color defaultnav = Color.decode("#366273");
     private Color highlighttnav = Color.decode("#97ABC8");
-    private JLabel all, daily, weekly, monthly, categories;
+    private JLabel daily, weekly, monthly, categories;
 
 
     private JLabel totalValue;
@@ -58,26 +55,9 @@ public class Mainapp {
         bglabel3.setLayout(null);
         panel.add(bglabel3);
 
-        //all
-        all = new JLabel("All");
-        all.setBounds(25, 30, 50, 25);
-        all.setFont(font1);
-        all.setForeground(Color.decode("#366273"));   //#97ABC8 light colot
-
-        all.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        all.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                loadExpenses(userId, "all");
-                changingcolor(all);
-            }
-        });
-        panel.add(all);
-        bglabel2.add(all);
-
          //daily
         daily = new JLabel("Daily");
-        daily.setBounds(85, 30, 50, 25);
+        daily.setBounds(40, 30, 50, 25);
         daily.setFont(font1);
         daily.setForeground(Color.decode("#366273"));   
 
@@ -94,7 +74,7 @@ public class Mainapp {
 
         //weekly
         weekly = new JLabel("Weekly");
-        weekly.setBounds(159, 30, 60, 25);
+        weekly.setBounds(120, 30, 60, 25);
         weekly.setFont(font1);
         weekly.setForeground(Color.decode("#366273"));
     
@@ -112,7 +92,7 @@ public class Mainapp {
 
          //monthly
         monthly = new JLabel("Monthly");
-        monthly.setBounds(248, 30, 70, 25);
+        monthly.setBounds(220, 30, 70, 25);
         monthly.setFont(font1);
         monthly.setForeground(Color.decode("#366273"));
     
@@ -129,7 +109,7 @@ public class Mainapp {
         bglabel2.add(monthly);
 
         categories = new JLabel("Categories");
-        categories.setBounds(338, 30, 90, 25);
+        categories.setBounds(320, 30, 90, 25);
         categories.setFont(font1);
         categories.setForeground(Color.decode("#366273"));
     
@@ -172,7 +152,7 @@ public class Mainapp {
         lbl.setForeground(Color.WHITE);
         bglabel1.add(lbl);
 
-        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount", "delete"}, 0) {
+        model = new DefaultTableModel(new Object[]{"Date", "Category", "Description", "Amount"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4; 
@@ -180,12 +160,9 @@ public class Mainapp {
         };
 
         JTable table = new JTable(model);
-        table.getColumnModel().getColumn(4).setCellRenderer(new DeleteButtonRenderer());
-        table.getColumnModel().getColumn(4).setCellEditor(new DeleteButtonEditor(table, model));
-
-
         table.setRowHeight(50);
         table.setShowGrid(false);
+        table.setRowSelectionAllowed(false);
         table.setIntercellSpacing(new Dimension(0, 10));
 
         // Hidin headers
@@ -198,7 +175,7 @@ public class Mainapp {
         centerAlign.setFont(font1);
         
         // Apply it in table to make it centr
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerAlign);
         }
 
@@ -209,7 +186,7 @@ public class Mainapp {
         table.setFont(font1);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(0, 0, 450, 450);
+        scrollPane.setBounds(0, 0, 450, 370);
         scrollPane.setBorder(null);
         scrollPane.getViewport().setBackground(Color.decode("#294752"));
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -259,25 +236,13 @@ public class Mainapp {
     // Add scrollPane inside layeredPane
     layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER); // added to scrollpane then make it bg .defaultlayer 
 
-    JLabel delete = new JLabel("-");
-    delete.setBounds(50, 352, 200, 70); 
-    delete.setFont(font3);
-    delete.setForeground(Color.decode("#DE373A"));
-    delete.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-    delete.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            new add(userId, Mainapp.this);
-            frame.dispose();
-        }
-    });
-    layeredPane.add(delete, JLayeredPane.PALETTE_LAYER);
     
-    JLabel add = new JLabel("+");
-    add.setBounds(370, 360, 70, 70); 
-    add.setFont(font5);
+    JLabel add = new JLabel("Add Expenses");
+    add.setBounds(280, 370, 138, 70);  
+    add.setFont(font3);
     add.setForeground(Color.decode("#467A8D"));
+    add.setBackground(Color.decode("#1C3138"));
     add.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
     add.addMouseListener(new MouseAdapter() {
@@ -287,15 +252,57 @@ public class Mainapp {
             frame.dispose();
         }
     });
-
+    JLabel delete = new JLabel("Delete Expenses");
+    delete.setBounds(40, 370, 180, 70);  
+    delete.setFont(font3);
+    delete.setForeground(Color.decode("#467A8D"));
+    delete.setBackground(Color.decode("#1C3138"));
+    delete.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    delete.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            table.setRowSelectionAllowed(true); 
+            
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                String date = (String) model.getValueAt(selectedRow, 0);
+                String category = (String) model.getValueAt(selectedRow, 1);
+                String description = (String) model.getValueAt(selectedRow, 2);
+                double amount = Double.parseDouble(model.getValueAt(selectedRow, 3).toString());
     
-    layeredPane.add(add, JLayeredPane.PALETTE_LAYER); //.pelett_layer to make it front or overly
-
-
-
-        loadExpenses(userId, "all");
+                int confirm = JOptionPane.showConfirmDialog(frame,
+                        "Are you sure you want to delete this expense?",
+                        "Confirm Deletion", JOptionPane.YES_NO_OPTION);
     
-        changingcolor(all);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Delete from dats
+                    UserDatabase.deleteExpense(date, category, description, amount);
+    
+    
+                    model.removeRow(selectedRow);
+    
+                    // Update total value
+                    updateTotalValue();
+    
+                
+                    table.setRowSelectionAllowed(false);
+                } else {
+                    
+                    table.setRowSelectionAllowed(false);
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please select an expense to delete.", "No Selection", JOptionPane.WARNING_MESSAGE);
+                
+                table.setRowSelectionAllowed(false);
+            }
+        }
+    });
+    
+    layeredPane.add(add); //.pelett_layer to make it front or overly
+    layeredPane.add(delete);
+
+    loadExpenses(userId, "daily");
+    changingcolor(daily);
 
         frame.setSize(450, 650);
         frame.setLayout(null);
@@ -305,9 +312,16 @@ public class Mainapp {
         frame.setContentPane(panel);
         frame.setVisible(true);
     }
+    private void updateTotalValue() {
+        double total = 0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            total += Double.parseDouble(model.getValueAt(i, 3).toString());
+        }
+        totalValue.setText(String.format("%.2f", total));
+    }
+    
     // v===========color changing habndle===============v
     public void changingcolor(JLabel selectedLabel) {
-        all.setForeground(defaultnav);
         daily.setForeground(defaultnav);
         weekly.setForeground(defaultnav);
         monthly.setForeground(defaultnav);
@@ -351,8 +365,6 @@ public class Mainapp {
                     case "category":
                         filteredExpenses.add(expense); 
                         break;
-                    case  "all":
-                        filteredExpenses.add(expense); 
                 }
             } catch (DateTimeParseException e) {
                 System.err.println("Invalid date: " + expense[0] + " - " + e.getMessage());
